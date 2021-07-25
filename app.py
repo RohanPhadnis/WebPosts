@@ -109,7 +109,7 @@ def loginapi():
                 resp['time'] = time.time()
                 mongo.db.session.insert_one(resp)
                 user_session = list(mongo.db.session.find({'user': resp['user']}))[0]
-                return encoder.encode({'login': True, 'session': str(user_session)})
+                return encoder.encode({'login': True, 'session': str(user_session['_id'])})
 
 
 @app.route('/api/<user_session>', methods=['GET'])
