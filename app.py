@@ -111,6 +111,18 @@ def loginapi():
                 user_session = list(mongo.db.session.find({'user': resp['user']}))[0]
                 return encoder.encode({'login': True, 'session': str(user_session['_id'])})
 
+@app.route('/confirm/<username>', methods=['GET'])
+def confirm(username):
+    user = list(mongo.db.session.find({'user': username}))
+    if len(user) == 0:
+        return encoder.encode({'login': False, 'session': ''})
+    else:
+        user = user[0]
+        if time.time() - user['time'] > lock_time:
+            return encoder.encode({'login': False, 'session': ''})
+        else:
+            return encoder.encode({'login': True, 'session': str(user_session['_id'])})
+
 
 @app.route('/api/<user_session>', methods=['GET'])
 def api(user_session):
