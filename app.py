@@ -50,6 +50,7 @@ def login():
                 return render_template('login.html', msg='incorrect password')
             else:
                 resp['time'] = time.time()
+                mongo.db.session.delete_many({'user': resp['user']})
                 mongo.db.session.insert_one(resp)
                 user_session = list(mongo.db.session.find({'user': resp['user']}))[0]
                 return redirect('/view/' + str(user_session['_id']))
@@ -92,28 +93,11 @@ def post(user_session):
         return redirect('/post/{}'.format(str(session['_id'])))
 
 
-@app.route('/loginapi', methods=['GET', 'POST'])
-def loginapi():
-    if request.method == 'GET':
-        return render_template('login.html')
-    elif request.method == 'POST':
-        resp = dict(request.form)
-        user = list(mongo.db.user.find({'user': resp['user']}))
-        if len(user) == 0:
-            return encoder.encode({'login': False, 'session': ''})
-        else:
-            user = user[0]
-            if user['pass'] != resp['pass']:
-                return encoder.encode({'login': False, 'session': ''})
-            else:
-                resp['time'] = time.time()
-                mongo.db.session.insert_one(resp)
-                user_session = list(mongo.db.session.find({'user': resp['user']}))[0]
-                return encoder.encode({'login': True, 'session': str(user_session['_id'])})
-
 @app.route('/confirm/<username>', methods=['GET'])
 def confirm(username):
+    print(username)
     user = list(mongo.db.session.find({'user': username}))
+    print(user)
     if len(user) == 0:
         return encoder.encode({'login': False, 'session': ''})
     else:
@@ -121,7 +105,7 @@ def confirm(username):
         if time.time() - user['time'] > lock_time:
             return encoder.encode({'login': False, 'session': ''})
         else:
-            return encoder.encode({'login': True, 'session': str(user_session['_id'])})
+            return encoder.encode({'login': True, 'session': str(user['_id'])})
 
 
 @app.route('/api/<user_session>', methods=['GET'])
