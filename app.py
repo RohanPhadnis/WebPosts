@@ -121,6 +121,8 @@ def api(user_session):
                 return encoder.encode(['please login'])
             else:
                 docs = list(mongo.db.entry.find({'user': session['user']}))
+                for n in range(len(docs)):
+                    docs[n]['_id'] = str(docs[n]['_id'])
                 return encoder.encode(docs)
 
 
