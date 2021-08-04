@@ -158,6 +158,22 @@ def rdelete(user_session, entry_id):
                 return redirect('/api/{}'.format(user_session))
 
 
+@app.route('/info/<user_session>', methods=['GET'])
+def info(user_session):
+    if request.method == 'GET':
+        session = list(mongo.db.session.find({'_id': bson.ObjectId(user_session)}))
+        if len(session) == 0:
+            return encoder.encode(['please login'])
+        else:
+            session = session[0]
+            if time.time() - session['time'] >= lock_time:
+                mongo.db.session.delete_one({'_id': bson.ObjectId(user_session)})
+                return encoder.encode(['please login'])
+            else:
+                session['_id'] = str(session['_id'])
+                return encoder.encode(session)
+
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=True, port=port)
