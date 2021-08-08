@@ -1,10 +1,9 @@
-import time
 import os
+import time
 import json
 import bson
 from flask import *
 from flask_pymongo import *
-
 
 app = Flask('WebPosts')
 app.config['MONGO_URI'] = 'mongodb+srv://anyone:xyz@flask.ngjrl.mongodb.net/flask_react_db?retryWrites=true&w=majority'

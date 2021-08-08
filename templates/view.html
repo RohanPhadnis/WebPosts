@@ -4,21 +4,30 @@
   <meta charset="UTF-8">
   <title>Diary</title>
   <link rel="stylesheet" type="text/css" href="../static/style.css">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<h1>View Entries</h1>
-<nav>
-  <ul>
-    <li><a href="/">Home</a></li>
-    <li><a href="/view/{{session}}">View</a></li>
-    <li><a href="/post/{{session}}">Post</a></li>
-  </ul>
+<div class="jumbotron">
+  <h1>View Entries</h1>
+</div>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav">
+      <li><a href="/">Home</a></li>
+      <li class="active"><a href="/view/{{session}}">View</a></li>
+      <li><a href="/post/{{session}}">Post</a></li>
+    </ul>
+  </div>
 </nav>
-{% for doc in docs %}
-<h2>{{doc['title']}}</h2>
-<p>{{doc['text']}}</p>
-<a href="/delete/{{session}}/{{doc['_id']}}"><button style="color:rgb(255,0,0)">x</button></a>
-<br>
-{% endfor %}
+<div class="container">
+  {% for doc in docs %}
+  <div class="panel panel-default">
+    <h2>{{doc['title']}}</h2>
+    <p>{{doc['text']}}</p>
+    <a href="/delete/{{session}}/{{doc['_id']}}"><button class="btn btn-default" style="color:rgb(255,0,0)">x</button></a>
+  </div>
+  <br>
+  {% endfor %}
+</div>
 </body>
 </html>
