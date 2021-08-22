@@ -220,7 +220,9 @@ def stats():
 def apistats():
     if request.method == 'GET':
         docs = list(mongo.db.stats.find({}))
-        return docs
+        for d in docs:
+            d['_id'] = str(d['_id'])
+        return encoder.encode(docs)
 
 
 if __name__ == '__main__':
