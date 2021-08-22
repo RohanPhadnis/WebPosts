@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diary</title>
+    <link rel="stylesheet" type="text/css" href="../static/style.css">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="jumbotron">
+  <h1>Stats</h1>
+</div>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav">
+      <li><a href="/">Home</a></li>
+      <li><a href="/login">Login</a></li>
+      <li><a href="/reg">Register</a></li>
+      <li class="active"><a href="/stats">Stats</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="container">
+    <canvas id="canvas" style="width:75%; height:50%"></canvas>
+    <br>
+    <br>
+    <table id="table"></table>
+</div>
+<script>
+    function instantiate(data) {
+        return data;
+    }
+</script>
+<script>
+    var x;
+    var y;
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    var width = canvas.width;
+    var height = canvas.height;
+
+    var rects = instantiate({{rects|tojson}});
+    var events = instantiate({{events|tojson}});
+
+    var table;
+    var row;
+    var data;
+    var index;
+    var headers = ["ID", "Page", "IP Address", "User", "Time Stamp"];
+    var keys = ["_id", "page", "ip", "user", "time"];
+
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = 'white';
+    ctx.fillRect(1, 1, width-2, height-2);
+    ctx.fillStyle = 'blue';
+    ctx.fillText('Activity', 0, height*0.5);
+    ctx.fillText('Time', width*0.5, height-height*0.1);
+    ctx.fillStyle = 'red';
+
+    for (var i = 0; i <= 50; i++) {
+        ctx.fillRect(rects[i][0] * width, rects[i][1] * height, rects[i][2] * width, rects[i][3] * height);
+    }
+
+    canvas.addEventListener('mousedown', e => {
+        x = e.offsetX;
+        y = e.offsetY;
+
+        for (var i = 0; i <= 50; i++) {
+            if (rects[i][0] * width <= x && x <= rects[i][0] * width + rects[i][2] * width && rects[i][1] * height <= y && y <= rects[i][1] * height + rects[i][3] * height) {
+                index = i;
+            }
+        }
+
+        try {
+            table = document.getElementById("table");
+            table.remove();
+        } catch (error) {
+            console.log("received an error");
+        }
+
+        table = document.createElement("TABLE");
+        table.id = "table";
+        table.className = "table table-bordered";
+        row = document.createElement("TR");
+        for (var i = 0; i < headers.length; i++) {
+            data = document.createElement("TH");
+            data.innerHTML = headers[i];
+            row.appendChild(data);
+        }
+        table.appendChild(row);
+
+        for (var i = 0; i < events[index].length; i++) {
+            row = document.createElement("TR");
+            try {
+                data = document.createElement("TD");
+                data.innerHTML = events[index][i]._id;
+                row.appendChild(data);
+                data = document.createElement("TD");
+                data.innerHTML = events[index][i].page;
+                row.appendChild(data);
+                data = document.createElement("TD");
+                data.innerHTML = events[index][i].ip;
+                row.appendChild(data);
+                data = document.createElement("TD");
+                data.innerHTML = events[index][i].user;
+                row.appendChild(data);
+                data = document.createElement("TD");
+                data.innerHTML = events[index][i].time;
+                row.appendChild(data);
+            } catch (error) {
+                data = document.createElement("TD");
+                data.innerHTML = "None";
+                row.appendChild(data);
+                data = document.createElement("TD");
+                data.innerHTML = "None";
+                row.appendChild(data);
+                data = document.createElement("TD");
+                data.innerHTML = "None";
+                row.appendChild(data);
+                data = document.createElement("TD");
+                data.innerHTML = "None";
+                row.appendChild(data);
+                data = document.createElement("TD");
+                data.innerHTML = "None";
+                row.appendChild(data);
+            }
+            table.appendChild(row);
+        }
+        document.body.appendChild(table);
+
+
+    });
+</script>
+</body>
+</html>
