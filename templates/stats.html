@@ -21,7 +21,7 @@
   </div>
 </nav>
 <div class="container">
-    <canvas id="canvas" style="width:75%; height:50%"></canvas>
+    <canvas id="canvas"></canvas>
     <br>
     <br>
     <table id="table"></table>
@@ -69,6 +69,7 @@
         for (var i = 0; i <= 50; i++) {
             if (rects[i][0] * width <= x && x <= rects[i][0] * width + rects[i][2] * width && rects[i][1] * height <= y && y <= rects[i][1] * height + rects[i][3] * height) {
                 index = i;
+                console.log('hi');
             }
         }
 
